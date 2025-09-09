@@ -48,7 +48,7 @@ export default function Home() {
   const [hoveredOffering, setHoveredOffering] = useState<string | null>(null)
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -182,7 +182,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/20 backdrop-blur-sm">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 watercolor-overlay-strong">
         <div className="mx-auto max-w-4xl text-center">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}

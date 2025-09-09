@@ -53,40 +53,40 @@
   --popover: oklch(0.98 0.01 50);
   --popover-foreground: oklch(0.25 0.02 30);
   
-  /* Muted teal from watercolor - primary elements */
-  --primary: oklch(0.45 0.08 180);
+  /* Desaturated teal from watercolor - primary elements */
+  --primary: oklch(0.50 0.06 180);
   --primary-foreground: oklch(0.95 0.01 50);
   
-  /* Burnt orange from watercolor - secondary elements */
-  --secondary: oklch(0.70 0.12 35);
+  /* Muted orange-brown from watercolor - secondary elements */
+  --secondary: oklch(0.65 0.08 35);
   --secondary-foreground: oklch(0.95 0.01 50);
   --muted: oklch(0.92 0.02 50);
   --muted-foreground: oklch(0.45 0.03 40);
-  --accent: oklch(0.75 0.10 40);
+  --accent: oklch(0.70 0.08 40);
   --accent-foreground: oklch(0.25 0.02 30);
   
   /* Warm earth tones for destructive actions */
   --destructive: oklch(0.55 0.15 25);
   --border: oklch(0.88 0.02 50);
   --input: oklch(0.88 0.02 50);
-  --ring: oklch(0.45 0.08 180);
+  --ring: oklch(0.50 0.06 180);
   
-  /* Chart colors using watercolor palette */
-  --chart-1: oklch(0.45 0.08 180); /* Muted teal */
-  --chart-2: oklch(0.70 0.12 35);  /* Burnt orange */
-  --chart-3: oklch(0.60 0.10 60);  /* Warm brown */
-  --chart-4: oklch(0.50 0.15 30);  /* Terracotta */
-  --chart-5: oklch(0.65 0.08 200); /* Soft blue */
+  /* Chart colors using watercolor palette from jednoduse.png */
+  --chart-1: oklch(0.50 0.06 180); /* Desaturated teal */
+  --chart-2: oklch(0.65 0.08 35);  /* Muted orange-brown */
+  --chart-3: oklch(0.60 0.08 60);  /* Warm brown */
+  --chart-4: oklch(0.55 0.10 30);  /* Terracotta */
+  --chart-5: oklch(0.60 0.06 200); /* Soft blue */
   
   /* Sidebar using watercolor tones */
   --sidebar: oklch(0.95 0.01 50);
   --sidebar-foreground: oklch(0.25 0.02 30);
-  --sidebar-primary: oklch(0.45 0.08 180);
+  --sidebar-primary: oklch(0.50 0.06 180);
   --sidebar-primary-foreground: oklch(0.95 0.01 50);
-  --sidebar-accent: oklch(0.70 0.12 35);
+  --sidebar-accent: oklch(0.65 0.08 35);
   --sidebar-accent-foreground: oklch(0.95 0.01 50);
   --sidebar-border: oklch(0.88 0.02 50);
-  --sidebar-ring: oklch(0.45 0.08 180);
+  --sidebar-ring: oklch(0.50 0.06 180);
 }
 
 .dark {
@@ -168,23 +168,55 @@
     text-wrap: pretty;
   }
   
-  /* Watercolor background with jednoduse.png */
+  /* Watercolor background with jednoduse.png - optimized */
   .watercolor-bg {
     background-image: url('/jednoduse.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    min-height: 100vh;
   }
   
-  /* Overlay for better text readability */
+  /* Mobile optimization for watercolor background */
+  @media (max-width: 768px) {
+    .watercolor-bg {
+      background-attachment: scroll;
+      background-size: cover;
+      background-position: center top;
+    }
+  }
+  
+  /* Tablet optimization */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .watercolor-bg {
+      background-attachment: scroll;
+    }
+  }
+  
+  /* Enhanced overlay for better text readability while preserving watercolor aesthetic */
   .watercolor-overlay {
     background: linear-gradient(
       135deg,
-      rgba(248, 250, 252, 0.85) 0%,
-      rgba(254, 252, 250, 0.90) 50%,
-      rgba(248, 250, 252, 0.85) 100%
+      rgba(248, 250, 252, 0.75) 0%,
+      rgba(254, 252, 250, 0.80) 25%,
+      rgba(248, 250, 252, 0.75) 50%,
+      rgba(254, 252, 250, 0.80) 75%,
+      rgba(248, 250, 252, 0.75) 100%
     );
+    backdrop-filter: blur(0.5px);
+    min-height: 100vh;
+  }
+  
+  /* Alternative overlay for sections that need more contrast */
+  .watercolor-overlay-strong {
+    background: linear-gradient(
+      135deg,
+      rgba(248, 250, 252, 0.90) 0%,
+      rgba(254, 252, 250, 0.95) 50%,
+      rgba(248, 250, 252, 0.90) 100%
+    );
+    backdrop-filter: blur(1px);
   }
   
   /* Gentle fade-in animation */
@@ -210,5 +242,48 @@
   
   .circle-hover:hover {
     transform: scale(1.05);
+  }
+  
+  /* Watercolor-themed card styling */
+  .watercolor-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Subtle watercolor border effect */
+  .watercolor-border {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Text shadow for better readability over watercolor */
+  .watercolor-text-shadow {
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+  
+  /* Performance optimization for background loading */
+  .watercolor-bg {
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  
+  /* Preload optimization hint */
+  .watercolor-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/jednoduse.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    z-index: -1;
   }
 }
