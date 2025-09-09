@@ -11,8 +11,8 @@ const offerings = [
     description: 'Rodinné a systémové konstelace pro hlubší pochopení vztahů a vzorců v rodině a dalších systémech.',
     longDescription: 'Konstelace jsou terapeutickou metodou, která nám umožňuje nahlédnout do skrytých dynamik v rodinných a jiných systémech. Pomocí zástupců můžeme zobrazit a prožít vztahy, které nás ovlivňují, často nevědomě. Tato metoda pomáhá odhalit a uvolnit blokády, které brání našemu osobnímu růstu a zdravým vztahům.',
     icon: Users,
-    color: '#B2F5EA', // teal-200
-    hoverColor: '#81E6D9', // teal-300
+    color: '#A8D5BA', // muted teal-green
+    hoverColor: '#7FB069', // deeper teal-green
     features: [
       'Rodinné konstelace',
       'Systémové konstelace',
@@ -36,8 +36,8 @@ const offerings = [
     description: 'Terapeutická práce s uměním a kreativitou pro sebevyjádření, léčení a osobní rozvoj.',
     longDescription: 'Arteterapie využívá kreativní proces jako terapeutický nástroj. Prostřednictvím malování, kreslení, modelování a dalších uměleckých technik můžeme vyjádřit a zpracovat emoce, myšlenky a zkušenosti, které jsou obtížně vyjádřitelné slovy. Tato metoda je vhodná pro všechny věkové kategorie a nevyžaduje umělecké dovednosti.',
     icon: Palette,
-    color: '#FED7AA', // orange-200
-    hoverColor: '#FDBA74', // orange-300
+    color: '#E8B4A0', // muted orange-brown
+    hoverColor: '#D4A574', // deeper orange-brown
     features: [
       'Malování a kreslení',
       'Modelování z hlíny',
@@ -61,8 +61,8 @@ const offerings = [
     description: 'Osobní doprovázení na cestě osobního růstu, sebepoznání a životních změn.',
     longDescription: 'Doprovázení je proces, ve kterém vás podporuji na vaší životní cestě. Společně prozkoumáváme vaše potřeby, cíle a výzvy, hledáme zdroje a strategie pro jejich řešení. Tento přístup je založen na respektu k vaší jedinečnosti a na víře ve vaši schopnost najít vlastní odpovědi a řešení.',
     icon: Heart,
-    color: '#FDE68A', // amber-200
-    hoverColor: '#FCD34D', // amber-300
+    color: '#F5E6D3', // warm cream
+    hoverColor: '#E8D5C4', // deeper cream
     features: [
       'Individuální sezení',
       'Životní koučink',
@@ -86,8 +86,8 @@ const offerings = [
     description: 'Jednotlivé sezení zaměřená na specifické potřeby, výzvy a osobní témata.',
     longDescription: 'Individuální práce je přizpůsobena vašim specifickým potřebám a situaci. Můžeme kombinovat různé přístupy - konstelace, arteterapii, koučink nebo jiné metody podle toho, co je pro vás nejvhodnější. Každé sezení je jedinečné a zaměřené na váš osobní růst a uzdravení.',
     icon: User,
-    color: '#E2E8F0', // slate-200
-    hoverColor: '#CBD5E1', // slate-300
+    color: '#D1C7B8', // muted warm gray
+    hoverColor: '#B8A99A', // deeper warm gray
     features: [
       'Přizpůsobené přístupy',
       'Kombinace metod',
@@ -110,6 +110,8 @@ const offerings = [
 export default function CircleOfferings() {
   const [selectedOffering, setSelectedOffering] = useState<string | null>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [showAuthor, setShowAuthor] = useState(false)
+  const [animationPhase, setAnimationPhase] = useState(0) // 0: initial, 1: offerings, 2: author, 3: author disappears
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -120,6 +122,29 @@ export default function CircleOfferings() {
     window.addEventListener('resize', checkIsMobile)
     
     return () => window.removeEventListener('resize', checkIsMobile)
+  }, [])
+
+  // Animation sequence
+  useEffect(() => {
+    const timer1 = setTimeout(() => {
+      setAnimationPhase(1) // Show offerings
+    }, 3500) // Wait 1.5 seconds before showing offerings
+
+    const timer2 = setTimeout(() => {
+      setAnimationPhase(2) // Show author
+      setShowAuthor(true)
+    }, 5000) // Show author after 5 seconds
+
+    const timer3 = setTimeout(() => {
+      setAnimationPhase(3) // Author disappears
+      setShowAuthor(false)
+    }, 10000) // Author disappears after 10 seconds
+
+    return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+      clearTimeout(timer3)
+    }
   }, [])
 
   const getSegmentPath = (index: number, total: number, radius: number) => {
@@ -143,6 +168,13 @@ export default function CircleOfferings() {
     return { x, y }
   }
 
+  const getAuthorPosition = (radius: number) => {
+    // Position author to the right side of the circle, closer to the main circle
+    const x = radius + (radius * 0.9) * Math.cos(0) // 0 degrees (right side)
+    const y = radius + (radius * 0.9) * Math.sin(0)
+    return { x, y }
+  }
+
   const radius = isMobile ? 150 : 200
 
   return (
@@ -155,6 +187,21 @@ export default function CircleOfferings() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="relative w-full max-w-md"
         >
+          {/* Loading state */}
+          {animationPhase === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <motion.div
+                className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              />
+            </motion.div>
+          )}
           <svg 
             width={radius * 2} 
             height={radius * 2} 
@@ -169,11 +216,17 @@ export default function CircleOfferings() {
                   <stop offset="100%" stopColor={offering.hoverColor} />
                 </linearGradient>
               ))}
+              {/* Author gradient */}
+              <linearGradient id="gradient-author" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#F0E6D2" />
+                <stop offset="100%" stopColor="#E6D4C1" />
+              </linearGradient>
             </defs>
             
             {offerings.map((offering, index) => {
               const center = getSegmentCenter(index, offerings.length, radius)
               const isSelected = selectedOffering === offering.id
+              const shouldShow = animationPhase >= 1
               
               return (
                 <g key={offering.id}>
@@ -186,16 +239,30 @@ export default function CircleOfferings() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedOffering(isSelected ? null : offering.id)}
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.8, delay: index * 0.1 }}
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ 
+                      pathLength: shouldShow ? 1 : 0, 
+                      opacity: shouldShow ? 1 : 0 
+                    }}
+                    transition={{ 
+                      duration: 1.2, 
+                      delay: shouldShow ? index * 0.3 : 0,
+                      ease: "easeOut"
+                    }}
                   />
                   
                   {/* Icon and text */}
                   <motion.g
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                    initial={{ opacity: 0, scale: 0.3 }}
+                    animate={{ 
+                      opacity: shouldShow ? 1 : 0, 
+                      scale: shouldShow ? 1 : 0.3 
+                    }}
+                    transition={{ 
+                      duration: 0.8, 
+                      delay: shouldShow ? 0.8 + index * 0.3 : 0,
+                      ease: "easeOut"
+                    }}
                   >
                     <foreignObject
                       x={center.x - (isMobile ? 30 : 40)}
@@ -219,6 +286,82 @@ export default function CircleOfferings() {
                 </g>
               )
             })}
+
+            {/* Author Element */}
+            <AnimatePresence>
+              {showAuthor && (
+                <motion.g
+                  initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1,
+                    x: 0,
+                    y: 0
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    scale: 0,
+                    x: 20,
+                    y: -20
+                  }}
+                  transition={{ 
+                    duration: 1.2, 
+                    ease: "easeOut",
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                >
+                  {(() => {
+                    const authorPos = getAuthorPosition(radius)
+                    return (
+                      <>
+                        {/* Author circle */}
+                        <motion.circle
+                          cx={authorPos.x}
+                          cy={authorPos.y}
+                          r={isMobile ? 25 : 30}
+                          fill="url(#gradient-author)"
+                          stroke="white"
+                          strokeWidth="2"
+                          className="drop-shadow-lg"
+                          initial={{ r: 0 }}
+                          animate={{ 
+                            r: isMobile ? 25 : 30,
+                            scale: [1, 1.05, 1],
+                          }}
+                          transition={{ 
+                            r: { duration: 0.8, delay: 0.2 },
+                            scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                          }}
+                        />
+                        
+                        {/* Author image and text */}
+                        <foreignObject
+                          x={authorPos.x - (isMobile ? 20 : 25)}
+                          y={authorPos.y - (isMobile ? 15 : 20)}
+                          width={isMobile ? "40" : "50"}
+                          height={isMobile ? "40" : "50"}
+                          className="pointer-events-none"
+                        >
+                          <div className="flex flex-col items-center justify-center h-full text-center">
+                            <div className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-full overflow-hidden mb-1 border-2 border-white shadow-md`}>
+                              <img 
+                                src="/dasinka.png" 
+                                alt="Autorka" 
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <span className={`${isMobile ? 'text-[10px]' : 'text-xs'} font-semibold text-slate-700 text-center leading-tight`}>
+                              Autorka
+                            </span>
+                          </div>
+                        </foreignObject>
+                      </>
+                    )
+                  })()}
+                </motion.g>
+              )}
+            </AnimatePresence>
           </svg>
         </motion.div>
       </div>
